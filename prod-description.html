@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Description</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        #product-description{
+            width:650px;
+            border:5px solid red;
+            border-radius:10px;
+            padding:10px;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+            
+        }
+        #parent{
+            display:flex;
+            flex-direction: column;
+            flex-wrap:wrap;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="parent">
+        <h1>Product description</h1>
+        <div id="product-description"></div> <br/>
+        <button id="back">Back</button>
+    </div>
+
+    <script>
+        const getIdFromURL = () => {
+            const URLParams = new URLSearchParams(window.location.search)
+            return URLParams.get('id')
+        }
+
+        const API = async (id) => {
+            let res = await fetch(`https://fakestoreapi.com/products/${id}`)
+            if (!res.ok) {
+                document.getElementById('product-description').innerHTML = `Failed to load`
+                return;
+            }
+            let data = await res.json()
+            DisplayDetails(data)
+        }
+
+        const DisplayDetails = (data) => {
+            let newDiv = document.getElementById('product-description');
+            newDiv.innerHTML = `
+                <h1>${data.title}</h1>
+                <img src="${data.image}" width="100px" />
+                <p>${data.description}</p>
+            `;
+        }
+
+        const getProduct = getIdFromURL();
+        if (getProduct) {
+            API(getProduct);
+        } else {
+            document.getElementById('product-description').innerHTML = `Failed to fetch single Product`;
+        }
+
+        document.getElementById('back').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+    </script>
+</body>
+</html>
